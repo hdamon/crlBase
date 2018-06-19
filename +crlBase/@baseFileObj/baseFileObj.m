@@ -1,14 +1,14 @@
-classdef (Abstract) baseobj < handle 
-% classdef crlEEG.fileio.BASEOBJ < handle
+classdef (Abstract) baseFileObj < handle 
+% classdef crlBase.BASEOBJ < handle
 %
 % Abstract superClass for all other filetypes.
 %
 % To use in the constructor for a derived class:
-%    f = obj@FILE(fname,fpath,validExts);
+%    f = obj@crlBase.baseFileObj(fname,fpath,validExts);
 %
-% crlEEG.fileio.basobj is an abstract class definition for file
+% crlBase.baseFileObj is an abstract class definition for file
 % reader/writer objects. It provides basic filename and path handling, as
-% well as 
+% well as file extension validation.
 %
 % Creates a file object for the file located at [fpath fname]. Checks that
 % the file extension for fname is in the list validExts.  If fpath is not
@@ -24,7 +24,7 @@ classdef (Abstract) baseobj < handle
 %   fname_short   :  Filename without extension
 %   fext          :  File extension alone (includes leading . )
 %   fullfile      :  Full file location with path
-%   existsOnDisk  :  Boolean value.  Returs exist([obj.fullfile],'file');
+%   existsOnDisk  :  Boolean value.  Returns exist([obj.fullfile],'file');
 %   date          :  Last edited date for the file
 %
 % Abstract Methods: (Must be defined in child classes)
@@ -62,13 +62,13 @@ classdef (Abstract) baseobj < handle
   methods
     %% Object Constructor
 
-    function obj = baseobj(varargin)
+    function obj = baseFileObj(varargin)
       
       if nargin>0
         
-        % If a crlEEG.fileio.baseobj object was passed in, return a new
+        % If a crlBase.baseFileObj object was passed in, return a new
         % object with the properties copied.
-        if isa(varargin{1},'crlEEG.fileio.baseobj')
+        if isa(varargin{1},'crlBase.baseFileObj')
           obj.fname = varargin{1}.fname;
           obj.fpath = varargin{1}.fpath;   
           obj.readOnly = varargin{1}.readOnly;
@@ -83,9 +83,9 @@ classdef (Abstract) baseobj < handle
         p.parse(varargin{:});
         
         [fName, fPath] = ...
-          crlEEG.fileio.checkFileNameAndPath(p.Results.fname,p.Results.fpath);
+          crlBase.checkFileNameAndPath(p.Results.fname,p.Results.fpath);
         
-        fName = crlEEG.fileio.validateFileExtension(fName,obj.validExts);
+        fName = crlBase.validateFileExtension(fName,obj.validExts);
         
         obj.fname = fName;
         obj.fpath = fPath;
@@ -98,7 +98,7 @@ classdef (Abstract) baseobj < handle
     %% Functionality for checking filenames
     function set.fname(obj,fname)
       % Set the filename, 
-      obj.fname = crlEEG.fileio.validateFileExtension(fname,obj.validExts);           
+      obj.fname = crlBase.validateFileExtension(fname,obj.validExts);           
     end;
     
     function out = get.fullfile(obj)
@@ -127,7 +127,7 @@ classdef (Abstract) baseobj < handle
             
     %% Functionality for Checking Paths
     function set.fpath(obj,fpath)
-      obj.fpath = crlEEG.fileio.baseobj.checkPath(fpath);
+      obj.fpath = crlBase.baseFileObj.checkPath(fpath);
     end;
                            
   end % Methods

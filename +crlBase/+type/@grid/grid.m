@@ -1,6 +1,6 @@
 classdef grid
   %
-  % classdef crlEEG.typegrid
+  % classdef crlBase.typegrid
   %
   % Class used to define a 1D, 2D, or 3D grid.
   %
@@ -28,7 +28,7 @@ classdef grid
   
   properties    
     sizes = [ 1 1 1 ]; % Default size
-    idxBy = crlEEG.typeindexType.startAtOne;
+    idxBy = crlBase.type.indexType.startAtOne;
   end
   
   properties (Dependent = true)
@@ -38,9 +38,9 @@ classdef grid
   methods    
     %% Object Constructor
     function obj = grid(sizes)
-      % Object constructor function for crlEEG.typegrid
+      % Object constructor function for crlBase.typegrid
       if nargin>0
-        if isa(sizes,'crlEEG.typegrid')
+        if isa(sizes,'crlBase.type.grid')
           obj.sizes = sizes.sizes;
           obj.idxBy = sizes.idxBy;
         else
@@ -59,10 +59,10 @@ classdef grid
     end
     
     function isEqual = eq(a,b)
-      % Test for equality of crlEEG.typegrid objects
+      % Test for equality of crlBase.typegrid objects
       %
-      assert(isa(a,'crlEEG.typegrid')&&isa(b,'crlEEG.typegrid'),...
-        'Both inputs must be crlEEG.typegrid objects');
+      assert(isa(a,'crlBase.type.grid')&&isa(b,'crlBase.type.grid'),...
+        'Both inputs must be crlBase.type.grid objects');
       
       isEqual = false;
       if ( (numel(a.sizes)==numel(b.sizes)) && all(a.sizes==b.sizes) )

@@ -3,7 +3,7 @@ function maps = colorMapList
 %
 % function maps = colorMapList
 
-warning('crlEEG.gui.colorMapList is deprecated. Please change to using crlEEG.alphacolor.colorMapList instead');
+warning('crlBase.gui.colorMapList is deprecated. Please change to using crlBase.alphacolor.colorMapList instead');
 
 maps(1).name = 'jet';
 maps(2).name = 'gray';
