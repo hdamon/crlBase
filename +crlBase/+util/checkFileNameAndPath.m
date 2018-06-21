@@ -1,8 +1,8 @@
 function [fName, fPath] = checkFileNameAndPath(varargin)
 % DEPRECATED FUNCTION STUB
 
-warning('crlEEG.util.checkFileNameAndPath is deprecated. Use crlEEG.fileIO version instead');
+warning('crlBase.util.checkFileNameAndPath is deprecated. Use crlBase.fileIO version instead');
 
-[fName,fPath] = crlEEG.fileio.checkFileNameAndPath(varargin{:});
+[fName,fPath] = crlBase.fileio.checkFileNameAndPath(varargin{:});
 
 end

@@ -1,10 +1,10 @@
 function parentFig = get(obj)
 % Returns the parent figure of a gui object
 
-if ~isempty(obj)&&(ishghandle(obj)||isa(obj,'crlEEG.gui.uipanel'))
+if ~isempty(obj)&&(ishghandle(obj)||isa(obj,'crlBase.gui.uipanel'))
   if ishghandle(obj)
     parentFig = ancestor(obj,'figure');
-  elseif isa(obj,'crlEEG.gui.uipanel')
+  elseif isa(obj,'crlBase.gui.uipanel')
     parentFig = ancestor(obj.panel,'figure');
   end
 end

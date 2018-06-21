@@ -1,24 +1,24 @@
 classdef timeseries < labelledArray
-  % crlEEG.gui data class for time series data
+  % Data class for timeseries data
   %
   % Data is stored as: time X channels
   %
   % While this duplicates some of the functionality of other types,
-  % this is used exclusively in the crlEEG.gui rendering package to provide
+  % this is used exclusively in the crlBase.gui rendering package to provide
   % a common interface.
   %
-  % obj = crlEEG.type.timeseries(data,labels,varargin)
+  % obj = crlBaseBase.type.timeseries(data,chanLabels,varargin)
   %
   % Inputs
   % ------
   %   data : nTime x nChannels array of time series data
-  %   labels : (Optional) Cell array of length nChannels containing label strings
+  %   chanLabels : (Optional) Cell array of length nChannels containing label strings
   %   
   % Param-Value Pairs
   % -----------------
-  %  yunits : Units for the data (DEFAULT: 'uV')
-  %  xunits : Units of time (DEFAULT: 'sec')
-  %   xvals : Timings associated with each sample. 
+  %  tUnits : Units for the data (DEFAULT: 'uV')
+  %  dataUnits : Units of time (DEFAULT: 'sec')
+  %   tVals : Timings associated with each sample. 
   % sampleRate : Sample rate for the data (DEFAULTL: 1Hz)
   % 
   % Referencing into timeseries objects
@@ -27,32 +27,32 @@ classdef timeseries < labelledArray
   % simplify the way in which EEG object can be accessed, sliced, and
   % referenced.
   %
-  % Toward that end, crlEEG.type.timeseries objects are referenced slightly
+  % Toward that end, crlBase.type.timeseries objects are referenced slightly
   % differently whether they are 
   % 
   %
   % Written By: Damon Hyde
-  % Part of the crlEEG Project
+  % Part of the crlBase Project
   % 2009-2017
   %
   
   
   properties (Dependent = true)
     data % Redirected from obj.a
-    labels;
-    xvals  
-    xrange
-    sampleRate
-  end
   
-  properties
-    xUnits = 'sec';
-  end;
-  
-  properties (Dependent = true)       
-    yrange
-    yUnits
+    % Channel Parameters
+    chanLabels
     chanType
+
+    % Time Parameters:
+    tUnits
+    tVals  
+    tRange    
+    sampleRate
+
+    % Data Parameters
+    dataUnits
+    dataRange
   end;
     
   properties (Access=protected)   
@@ -69,42 +69,42 @@ classdef timeseries < labelledArray
       if nargin>0
         p = inputParser;
         p.addRequired('data',@(x) (isnumeric(x)&&ismatrix(x))||...
-                                    isa(x,'crlEEG.type.timeseries'));
-        p.addOptional('labels',[],@(x) isempty(x)||iscellstr(x));
-        p.addParameter('xvals',[],@(x) isempty(x)||isvector(x));
-        p.addParameter('sampleRate',1,@(x) isnumeric(x)&&isscalar(x));
-        p.addParameter('yunits','uV',@(x) ischar(x)||iscellstr(x));
+                                    isa(x,'crlBase.type.timeseries'));
+        p.addParameter('chanLabels',[],@(x) isempty(x)||iscellstr(x));
         p.addParameter('chanType',[],@(x) ischar(x)||iscellstr(x));
-        p.addParameter('xunits','sec',@ischar);
+        p.addParameter('tVals',[],@(x) isempty(x)||isvector(x));
+        p.addParameter('tUnits','sec',@ischar);
+        p.addParameter('sampleRate',1,@(x) isnumeric(x)&&isscalar(x));
+        p.addParameter('dataUnits','uV',@(x) ischar(x)||iscellstr(x));
                         
         p.parse(varargin{:});
         
-        if isa(p.Results.data,'crlEEG.type.timeseries')
+        if isa(p.Results.data,'crlBase.type.timeseries')
           obj = obj.copyValuesFrom(p.Results.data);
           return;
         end                
         
         %% Set Object Properties
         obj.data       = p.Results.data;
-        obj.labels     = p.Results.labels;
-        obj.xvals      = p.Results.xvals;
-        obj.sampleRate = p.Results.sampleRate;
-        obj.yUnits     = p.Results.yunits;
+        obj.chanLabels = p.Results.chanLabels;
         obj.chanType   = p.Results.chanType;
-        obj.xUnits     = p.Results.xunits;
+        obj.tVals      = p.Results.tVals;
+        obj.tUnits     = p.Results.tUnits;
+        obj.sampleRate = p.Results.sampleRate;
+        obj.dataUnits  = p.Results.dataUnits;
         
         obj.dimNames{1} = 'time';
         obj.dimNames{2} = 'channel';
       end;
     end
          
-    %% Main crlEEG.type.timeseries plotting function
+    %% Main crlBase.type.timeseries plotting function
     function out = plot(obj,varargin)
-      % Overloaded plot function for crlEEG.type.timeseries objects
+      % Overloaded plot function for crlBase.type.timeseries objects
       %
       % Inputs
       % ------
-      %   obj : crlEEG.type.timeseries object
+      %   obj : crlBase.type.timeseries object
       % 
       % Param-Value Pairs
       % -----------------
@@ -128,7 +128,7 @@ classdef timeseries < labelledArray
             
       switch lower(p.Results.type)
         case 'dualplot'
-          out = crlEEG.gui.timeseries.interface.dualPlot(obj,p.Unmatched);
+          out = crlBase.gui.timeseries.interface.dualPlot(obj,p.Unmatched);
         case 'butterfly'
           out = butterfly(obj,p.Unmatched);
         case 'split'
@@ -155,13 +155,13 @@ classdef timeseries < labelledArray
       
       % Boolean Data Channels
       boolChan = obj.getChannelsByType('bool');
-      out(:,boolChan) = 0.75*obj.yrange(2)*out(:,boolChan); 
+      out(:,boolChan) = 0.75*obj.dataRange(2)*out(:,boolChan); 
       
       % Auxilliary Channels
       auxChan = obj.getChannelsByType('aux');      
       for i = 1:numel(auxChan)        
           m = max(abs(out(:,auxChan(i))));
-          out(:,auxChan(i)) = 0.75*(obj.yrange(2)/m)*out(:,auxChan(i));        
+          out(:,auxChan(i)) = 0.75*(obj.dataRange(2)/m)*out(:,auxChan(i));        
       end
         
     end    
@@ -182,7 +182,7 @@ classdef timeseries < labelledArray
       % replace : When set to true, replaces an existing channel
       %
       % If the input data is a matrix, label must be a cell string of
-      % channel labels. Units and type can then either be a single
+      % channel chanLabels. Units and type can then either be a single
       % character string (Uniform across channels), or cell arrays with
       % individual values for each channel.
       % 
@@ -199,7 +199,7 @@ classdef timeseries < labelledArray
       assert(size(data,1)==size(obj,1),'Channel Data Size is Incorrect');
       test1 = iscellstr(label)&&(size(data,2)==numel(label));
       test2 = size(data,2)==1;
-      assert(test1||test2,'Incorrect number of labels provided');
+      assert(test1||test2,'Incorrect number of chanLabels provided');
                   
       % Recurse
       if iscellstr(label)
@@ -227,7 +227,7 @@ classdef timeseries < labelledArray
       if ~exist('replace','var'), replace = false; end;
       
       % Add a single label
-      if ismember(label,obj.labels)
+      if ismember(label,obj.chanLabels)
         if replace
           warning('Channel replacement unimplemented');
           return;
@@ -248,8 +248,8 @@ classdef timeseries < labelledArray
       % function removeChannel(obj,label)
       %
       % Inputs
-      %    obj : crlEEG.type.timeseries object
-      %  label : List of channel labels to remove. Can be either a string,
+      %    obj : crlBase.type.timeseries object
+      %  label : List of channel chanLabels to remove. Can be either a string,
       %           or a cell array of strings.
       %
       
@@ -257,18 +257,18 @@ classdef timeseries < labelledArray
             
       assert(iscellstr(label),'Labels must be provided as strings');
       
-      idx = ~ismember(obj.labels,label);
+      idx = ~ismember(obj.chanLabels,label);
            
       % Truncate the internal channels
-      obj.dimLabels_{2} = obj.labels(idx);
-      obj.dimUnits_{2} = obj.yunits(idx);
+      obj.dimLabels_{2} = obj.chanLabels(idx);
+      obj.dimUnits_{2} = obj.tUnits(idx);
       obj.array_ = obj.data(:,idx);
       obj.chanType_ = obj.chanType_(idx);
     end
            
     %% Retrieve Channels By Type
     function out = isChannelType(obj,val)
-      % Returns a logical array that is true if a channels yUnits type
+      % Returns a logical array that is true if a channels dataUnits type
       % matches val
       out = cellfun(@(x) isequal(x,val),obj.chanType);
     end
@@ -283,10 +283,10 @@ classdef timeseries < labelledArray
       % function out = isUnitType(obj,val)
       %
       % Returns a logical array 
-      out = cellfun(@(x) isequal(x,val),obj.yUnits);
+      out = cellfun(@(x) isequal(x,val),obj.dataUnits);
     end
     
-    function out = getChannelByUnits(obj,val)
+    function out = getChannelBdataUnits(obj,val)
       out = find(obj.isUnitType(obj,val));
     end
             
@@ -316,8 +316,8 @@ classdef timeseries < labelledArray
       obj.chanType_ = cellVal;                        
     end % END set.chanType
                 
-    %% Get/Set Methods for obj.yUnits
-    function out = get.yUnits(obj)
+    %% Get/Set Methods for obj.dataUnits
+    function out = get.dataUnits(obj)
       if ~isempty(obj.dimUnits{2})
         out = obj.dimUnits{2};
       else
@@ -325,10 +325,10 @@ classdef timeseries < labelledArray
       end;
     end;    
     
-    function set.yUnits(obj,val)
+    function set.dataUnits(obj,val)
       if isempty(val), obj.dimUnits{2} = []; return; end;
       assert(ischar(val)||iscellstr(val),...
-              'yunits must be a character string or cell array of strings');
+              'tUnits must be a character string or cell array of strings');
       if ~iscellstr(val)
         [cellVal{1:size(obj,2)}] = deal(val); 
       else
@@ -336,7 +336,7 @@ classdef timeseries < labelledArray
       end;
       
       assert(numel(cellVal)==size(obj,2),...
-              'yunits must have a number of elements equal to the number of channels');
+              'tUnits must have a number of elements equal to the number of channels');
       obj.dimUnits_{2} = cellVal;                        
     end    
     
@@ -349,12 +349,12 @@ classdef timeseries < labelledArray
       obj.array = val;
     end
            
-    %% Set/Get Methods for obj.labels
-    function out = get.labels(obj)           
+    %% Set/Get Methods for obj.chanLabels
+    function out = get.chanLabels(obj)           
       out = obj.dimLabels{2};      
-    end % END get.labels
+    end % END get.chanLabels
     
-    function set.labels(obj,val)
+    function set.chanLabels(obj,val)
       if isempty(val) 
         val = cell(1,size(obj.data,2));
         for i = 1:size(obj.data,2),
@@ -363,7 +363,7 @@ classdef timeseries < labelledArray
       end;
       
       obj.dimLabels = {2, val};      
-    end % END set.labels
+    end % END set.chanLabels
             
     %% Get/Set Methods for obj.sampleRate
     function out = get.sampleRate(obj)
@@ -380,11 +380,11 @@ classdef timeseries < labelledArray
        obj.sampleRate_ = val;
     end
             
-    %% Get/Set Methods for obj.xvals    
-    function out = get.xvals(obj)
+    %% Get/Set Methods for obj.tVals    
+    function out = get.tVals(obj)
       out = obj.dimValues{1};      
     end    
-    function set.xvals(obj,val)
+    function set.tVals(obj,val)
       if isempty(val)
         % Default time values.
         val = (1./obj.sampleRate)*(0:size(obj.data,1)-1);
@@ -392,8 +392,16 @@ classdef timeseries < labelledArray
       obj.dimValues{1} = val;
     end;
     
-    %% Get/Set Methods for obj.yrange
-    function rangeOut = get.yrange(obj)
+    function out = get.tUnits(obj)
+      out = obj.dimUnits{1};
+    end
+    function set.tUnits(obj,val)
+      obj.dimUnits{1} = val;
+    end;
+    
+    
+    %% Get/Set Methods for obj.dataRange
+    function rangeOut = get.dataRange(obj)
       dataChans = obj.getChannelsByType('data');   
       if ~any(dataChans)
         rangeOut = [0 1]; return;
@@ -401,16 +409,16 @@ classdef timeseries < labelledArray
       rangeOut = [min(min(obj.data(:,dataChans))) ...
                   max(max(obj.data(:,dataChans)))];                
     end;                  
-    function set.yrange(obj,~)
-      error('obj.yrange is derived from obj.data');
+    function set.dataRange(obj,~)
+      error('obj.dataRange is derived from obj.data');
     end;
         
-    %% Get/Set Methods for obj.xrange
-    function rangeOut = get.xrange(obj)
-      rangeOut = [obj.xvals(1) obj.xvals(end)];
+    %% Get/Set Methods for obj.tRange
+    function rangeOut = get.tRange(obj)
+      rangeOut = [obj.tVals(1) obj.tVals(end)];
     end;    
-    function set.xrange(obj,~)
-      error('obj.xrange is derived from obj.xvals');
+    function set.tRange(obj,~)
+      error('obj.tRange is derived from obj.tVals');
     end;     
     
     %% Methods with their own m-files
@@ -426,46 +434,15 @@ classdef timeseries < labelledArray
     
   end
   
-  methods (Hidden)
-    
-    %% Deprecated functionality.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function out = getDataChannels(obj)
-      warning('DEPRECATED');
-      out = obj.getChannelsByType('data');
-    end    
-    function out = getBoolChannels(obj)
-      warning('DEPRECATED');
-      out = obj.getChannelsByType('bool');
-    end    
-    function out = getAuxChannels(obj)
-      warning('DEPRECATED');
-      out = obj.getChannelsByType('aux');
-    end        
-    function out = isDataChannel(obj)
-      warning('DEPRECATED');
-      out = obj.isChannelType('data');
-    end    
-    function out = isBoolChannel(obj)
-      warning('DEPRECATED');
-      out = obj.isChannelType('bool');
-    end    
-    function out = isAuxChannel(obj)
-      warning('DEPRECATED');
-      out = obj.isChannelType('aux');
-    end    
-    
-  end;
-  
   methods (Access=protected)
      function obj = copyValuesFrom(obj,valObj)
       % Individually copy values from a second object
       obj = obj.copyValuesFrom@labelledArray(valObj);      
-      if isa(valObj,'crlEEG.type.timeseries')
+      if isa(valObj,'crlBase.type.timeseries')
        % Can only copy these if it's actually a timeseries object.
        obj.sampleRate = valObj.sampleRate;
-       obj.yUnits = valObj.yUnits;
-       obj.xUnits = valObj.xUnits;      
+       obj.dataUnits  = valObj.dataUnits;
+       obj.tUnits     = valObj.tUnits;      
       end;
     end
     
@@ -483,6 +460,9 @@ classdef timeseries < labelledArray
     end
   end
   
+  %% Static Methods
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   methods (Static=true)
   end
   

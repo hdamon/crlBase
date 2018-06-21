@@ -1,10 +1,10 @@
 function boxOut = getBoundingBox(gridSpace)
-% Get the bounding box of a crlEEG.typegridInSpace object
+% Get the bounding box of a crlBase.typegridInSpace object
 %
 % function boxOut = getBoundingBox(gridSpace)
 %
 % Returns an 8x3 matrix of X-Y-Z coordinates defining in the bounding box
-% around a crlEEG.typegridInSpace object. The behavior of this is
+% around a crlBase.typegridInSpace object. The behavior of this is
 % dependent upon whether the grid is defined as being cell or node
 % centered.
 %

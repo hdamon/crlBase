@@ -8,13 +8,13 @@ function plotOut = split(tseries,varargin)
 %   ax   (optional): (Axis to plot to)
 %
 % Param-Value Inputs:
-%   'xvals'    : Values along X-axis (otherwise assumed to be 1:N)
-%   'yrange'   : Range of values to display on Y-Axis
+%   'tVals'    : Values along X-axis (otherwise assumed to be 1:N)
+%   'dataRange'   : Range of values to display on Y-Axis
 %   'chandisp' :
 %   'timedisp' :
 %   'sampdisp' :
 %   'scale'    : Scaling factor
-%   'labels'   : Labels for each channel
+%   'chanLabels'   : Labels for each channel
 %   'plotAll'  : Flag to force plotting of all timepoints. When set to 
 %                 false, sequences with more than 10k points will be 
 %                 subsampled to improve plotting speed.
@@ -24,14 +24,14 @@ function plotOut = split(tseries,varargin)
 % Part of the cnlEEG Project
 %
 
-import crlEEG.util.validation.isNumericVector
+import crlBase.util.validation.isNumericVector
 
 %% Input Parsing
 p = inputParser;
-p.addRequired('tseries',@(x) isa(x,'crlEEG.type.timeseries'));
+p.addRequired('tseries',@(x) isa(x,'crlBase.type.timeseries'));
 p.addOptional('ax',[],@(x) ishghandle(x)&&strcmpi(get(x,'type'),'axes'));
-p.addParamValue('xrange',tseries.xrange,@(x) isNumericVector(x,2));
-p.addParamValue('yrange',tseries.yrange,@(x) isNumericVector(x,2));
+p.addParamValue('tRange',tseries.tRange,@(x) isNumericVector(x,2));
+p.addParamValue('dataRange',tseries.dataRange,@(x) isNumericVector(x,2));
 p.addParamValue('chandisp',[],@(x) isNumericVector(x));
 p.addParamValue('timedisp',[],@(x) isNumericVector(x,2));
 p.addParamValue('sampdisp',[],@(x) isNumericVector(x,2));
@@ -40,11 +40,11 @@ p.addParamValue('plotAll',false,@(x) islogical(x));
 p.parse(tseries,varargin{:});
 
 ax = p.Results.ax;
-xrange = p.Results.xrange;
-yrange = p.Results.yrange;
+tRange = p.Results.tRange;
+dataRange = p.Results.dataRange;
 scale = p.Results.scale;
-xvals = tseries.xvals;
-labels = tseries.labels;
+tVals = tseries.tVals;
+chanLabels = tseries.chanLabels;
 
 %% If no axis provided, open a new figure with Axes
 if isempty(ax), figure; ax = axes; end;
@@ -72,13 +72,13 @@ end;
 useIdx = round(linspace(sampRange(1),sampRange(2),10000));
 useIdx = unique(useIdx);
 
-xvals = xvals(useIdx);
-xrange = [xvals(1) xvals(end)];
-labels = labels(chanDisp);
+tVals = tVals(useIdx);
+tRange = [tVals(1) tVals(end)];
+chanLabels = chanLabels(chanDisp);
 
 % Get data range and scale
-%delta = yrange(2)-yrange(1);
-delta = max(abs(yrange));
+%delta = dataRange(2)-dataRange(1);
+delta = max(abs(dataRange));
 
 data = tseries.getPlotData;
 data = data(useIdx,chanDisp);
@@ -102,21 +102,21 @@ for i = 1:size(data,2)
   if ~dataChan(i)
     color = 'b';  
   end;
-  plotOut(i) = plot(xvals,data(:,i)+offset,color,...
+  plotOut(i) = plot(tVals,data(:,i)+offset,color,...
                       'ButtonDownFcn',get(ax,'ButtonDownFcn'));
  % set(ax,'ButtonDownFcn',get(plotOut(i),'ButtonDownFcn'));
 end;
-ax.XLim = xrange;
+ax.XLim = tRange;
 ax.YLim = [0 size(data,2)+1];
 
 ticks = 1:size(data,2);
-if isempty(labels), labels = 1:size(data,2); end
+if isempty(chanLabels), chanLabels = 1:size(data,2); end
 set(ax,'YTick',ticks);
 if exist('flip')
-  set(ax,'YTickLabel',flip(labels));
+  set(ax,'YTickLabel',flip(chanLabels));
 else
   % Compatibility w/ earlier matlab versions.
-  set(ax,'YTickLabel',flipdim(labels,2));
+  set(ax,'YTickLabel',flipdim(chanLabels,2));
 end
 end
 

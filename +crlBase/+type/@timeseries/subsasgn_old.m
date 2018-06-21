@@ -1,5 +1,5 @@
 function obj = subsasgn(obj,s,varargin)
-% Overloaded subsasgn for crlEEG.type.timeseries objects
+% Overloaded subsasgn for crlBase.type.timeseries objects
 %
    switch s(1).type
       case '.'
@@ -79,7 +79,7 @@ function obj = subsasgn(obj,s,varargin)
     %%
     outIdx = zeros(1,numel(cellIn));
     for idx = 1:numel(outIdx)
-      tmp = find(strcmp(cellIn{idx},obj.labels));
+      tmp = find(strcmp(cellIn{idx},obj.chanLabels));
       assert(numel(tmp)==1,'Invalid Index Labels');
       outIdx(idx) = tmp;
     end

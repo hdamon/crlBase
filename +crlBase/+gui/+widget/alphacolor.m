@@ -126,7 +126,7 @@ classdef alphacolor < handle
         case 'custom'
           out = obj.storedVals.cmap;
         case 'redblue'
-          out = crlEEG.gui.util.redblue(obj.depth);
+          out = crlBase.gui.util.redblue(obj.depth);
         otherwise
           out = feval(obj.type,obj.depth);
       end
@@ -328,7 +328,7 @@ classdef alphacolor < handle
         'Units','normalized',...
         'Position',[0.03 0.03 0.3 0.54],...
         'SelectionChangeFcn',@(h,evt)obj.updateColormapFromGUI);
-      cmaps = crlEEG.gui.widget.alphacolor.colorMapList;
+      cmaps = crlBase.gui.widget.alphacolor.colorMapList;
       cmaps(end+1).name = 'custom';
       setappdata(guiObj,'radioGroup',radioGroup);
       
@@ -551,7 +551,7 @@ classdef alphacolor < handle
       adata = getappdata(obj.gui);
       
       % Update the Colormap Type
-      cmaps = crlEEG.gui.widget.alphacolor.colorMapList;
+      cmaps = crlBase.gui.widget.alphacolor.colorMapList;
       
       radioGroup = getappdata(obj.gui,'radioGroup');
       radioButtons = getappdata(obj.gui,'radioButtons');

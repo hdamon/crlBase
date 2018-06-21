@@ -1,14 +1,14 @@
-classdef gridInSpace < crlEEG.typegrid
+classdef gridInSpace < crlBase.typegrid
   % classdef gridInSpace < cnlGrid
   %
   % Class defining a cnlGrid embedded in three dimensional space.
-  % crlEEG.type.gridInSpace is used to extend cnlGrid to 3D voxelized volumes embedded
+  % crlBase.type.gridInSpace is used to extend cnlGrid to 3D voxelized volumes embedded
   % in real space.  If a 1D or 2D space is defined, it is by default embedded
   % in a fully 3D space, and values for the origin and directions properties
   % will be appropriately buffered with zeros if necessary
   %
   % Constructor Syntax:
-  %   obj = crlEEG.typegridInSpace(sizes,origin,directions);
+  %   obj = crlBase.typegridInSpace(sizes,origin,directions);
   %          sizes      : 1xN    vector of integer sizes
   %          origin     : 1x3    vector defining space origin
   %          directions : 3xNdim matrix of length 3 vectors defining the space
@@ -48,7 +48,7 @@ classdef gridInSpace < crlEEG.typegrid
     
     function obj = gridInSpace(varargin)
       % Constructor Syntax:
-      %   obj = crlEEG.typegridInSpace(sizes,origin,directions);
+      %   obj = crlBase.typegridInSpace(sizes,origin,directions);
       %         sizes      : 1xN    vector of integer sizes
       %         origin     : 1x3    vector defining space origin
       %         directions : 3xNdim matrix of length 3 vectors defining the space
@@ -56,11 +56,11 @@ classdef gridInSpace < crlEEG.typegrid
       % origin and directions are optional parameters.
       
       % Initialize Underlying Grid Object
-      obj = obj@crlEEG.typegrid;
+      obj = obj@crlBase.typegrid;
       
       % Pass a grid in, get a grid out.
       if nargin>0
-      if isa(varargin{1},'crlEEG.typegridInSpace')
+      if isa(varargin{1},'crlBase.typegridInSpace')
         obj.sizes      = sizes.sizes;
         obj.origin     = sizes.origin;
         obj.directions = sizes.directions;
@@ -90,25 +90,25 @@ classdef gridInSpace < crlEEG.typegrid
     
     %% Get/Set 
     function set.aspect(obj,val)
-      error('Cannot directly set the aspect property of a crlEEG.typegridInSpace object');
+      error('Cannot directly set the aspect property of a crlBase.typegridInSpace object');
     end;
     
     function out = get.aspect(obj)
-      % Returns the aspect ratio of the crlEEG.typegridInSpace object
+      % Returns the aspect ratio of the crlBase.typegridInSpace object
       out = sqrt(sum(obj.directions.^2,1));
     end
     
     function isEqual = eq(a,b)
-      % Checks equality of crlEEG.typegridInSpace objects
+      % Checks equality of crlBase.typegridInSpace objects
       %
       % Equality is defined as having the same underlying grids, and
       % origins/direction definitions within 0.01 base units of each other.
       %
-      assert(isa(a,'crlEEG.typegridInSpace')&&isa(b,'crlEEG.typegridInSpace'),...
-        'Both inputs must be crlEEG.typegridInSpace objects');
+      assert(isa(a,'crlBase.typegridInSpace')&&isa(b,'crlBase.typegridInSpace'),...
+        'Both inputs must be crlBase.typegridInSpace objects');
       
       isEqual = false;
-      if eq@crlEEG.typegrid(a,b)
+      if eq@crlBase.typegrid(a,b)
         if all(abs(a.origin-b.origin)<1e-2) && ...
             all(abs(a.directions(:)-b.directions(:))<1e-2)
           isEqual = true;
@@ -146,7 +146,7 @@ classdef gridInSpace < crlEEG.typegrid
       % function center = get.center(obj)
       %
       % Returns the geometric center of the bounding box for the
-      % crlEEG.typegridInSpace.
+      % crlBase.typegridInSpace.
       
       bbox = obj.boundingBox;
       center = 0.125*sum(bbox,1);
@@ -158,7 +158,7 @@ classdef gridInSpace < crlEEG.typegrid
       % Set the center of teh
       currCenter = obj.center;
       shiftVec = val - currCenter;
-      crlEEG.disp(['Shifting by' num2str(shiftVec)]);
+      crlBase.disp(['Shifting by' num2str(shiftVec)]);
       obj.origin = obj.origin+shiftVec;
     end
     

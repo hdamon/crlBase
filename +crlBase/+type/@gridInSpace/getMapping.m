@@ -15,8 +15,8 @@ function mapOut = getMapping(gridIn,gridOut,mapType)
 %
 
 
-% Check that both objects are crlEEG.typegridInSpace objects
-if ~(isa(gridIn,'crlEEG.type.gridInSpace')&&isa(gridOut,'crlEEG.type.gridInSpace'))
+% Check that both objects are crlBase.typegridInSpace objects
+if ~(isa(gridIn,'crlBase.type.gridInSpace')&&isa(gridOut,'crlBase.type.gridInSpace'))
   error('gridIn and gridOut must be of class cnlGridSpace');
 end
 
@@ -25,7 +25,7 @@ if ~exist('mapType','var'), mapType = 'tent'; end;
 
 % Check To Make Sure Bounding Boxes of Node Centered Grids Match.
 %
-% This is only done because of the way the underlying crlEEG.typegrid
+% This is only done because of the way the underlying crlBase.typegrid
 % object is being used to construct the mappings. Ideally this would be
 % implemented in a more generalized fashion, to allow mapping between
 % arbitrary spatial grids, and include either NaN or ZERO values for those
@@ -43,6 +43,6 @@ if ~( all(all(round(10*boxIn)==round(10*boxOut)))|| ...
 end;
 
 % Get Mapping
-mapOut = getMapping@crlEEG.typegrid(gridIn,gridOut,mapType);
+mapOut = getMapping@crlBase.typegrid(gridIn,gridOut,mapType);
 
 end

@@ -1,5 +1,5 @@
 classdef (Abstract) adaptable   
-  % classdef crlEEG.type.matrix.adaptable
+  % classdef crlBase.type.matrix.adaptable
   %
   % Abstract class for defining adaptable matrices.  
   %
@@ -30,7 +30,7 @@ classdef (Abstract) adaptable
   %      rebuildCurrMatrix : 
   %      canRebuild :
   %
-  % Part of the crlEEG Project
+  % Part of the crlBase Project
   % 2009-2018
   %
   

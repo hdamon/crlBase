@@ -1,6 +1,6 @@
-classdef showTF < crlEEG.gui.uipanel
+classdef showTF < crlBase.gui.uipanel
 %classdef showTF < matlab.ui.container.Panel
-% Provides a GUI interface for crlEEG.type.timeFrequencyDecomposition objects
+% Provides a GUI interface for crlBase.type.timeFrequencyDecomposition objects
 %
 % 
   properties
@@ -48,11 +48,11 @@ classdef showTF < crlEEG.gui.uipanel
         p.addParameter('showChan',[]);
         p.addParameter('logImg',false);
         p.addParameter('range',[]);        
-        p.addParameter('colormap',crlEEG.gui.widget.alphacolor,@(x) isa(x,'crlEEG.gui.widget.alphacolor'));
+        p.addParameter('colormap',crlBase.gui.widget.alphacolor,@(x) isa(x,'crlBase.gui.widget.alphacolor'));
         p.parse(tfDecomp,varargin{:});
                       
         % Superclass Constructor
-        obj = obj@crlEEG.gui.uipanel(p.Unmatched); 
+        obj = obj@crlBase.gui.uipanel(p.Unmatched); 
                 
         % Display Axes
         obj.ax = axes('parent',obj.panel,'units','normalized');        
@@ -190,7 +190,7 @@ classdef showTF < crlEEG.gui.uipanel
         
     function updateImage(obj)
       axes(obj.ax); cla;
-      set(crlEEG.gui.util.parentfigure.get(obj),'colormap',obj.cmap.cmap);
+      set(crlBase.gui.util.parentfigure.get(obj),'colormap',obj.cmap.cmap);
       obj.tfDecomp.imagesc('parent',obj.ax,...
                            'showBand',obj.showBand,...
                            'showChan',obj.showChan,...

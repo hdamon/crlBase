@@ -1,12 +1,12 @@
-classdef timeplay < crlEEG.gui.uipanel
+classdef timeplay < crlBase.gui.uipanel
   % UI Object For Playing Time Data
   %
-  % classdef timeplay < crlEEG.gui.uipanel
+  % classdef timeplay < crlBase.gui.uipanel
   %
   % Create a set of UI controls for controlling playback of time series
   % data.
   %
-  % obj = crlEEG.gui.widget.timeplay(varargin)
+  % obj = crlBase.gui.widget.timeplay(varargin)
   %
   % Optional Inputs:
   %   'range' : Set the range of timepoints available. For the moment,
@@ -81,7 +81,7 @@ classdef timeplay < crlEEG.gui.uipanel
       addParamValue(p,'externalsync',false);
       parse(p,varargin{:});
       
-      objOut= objOut@crlEEG.gui.uipanel(...
+      objOut= objOut@crlBase.gui.uipanel(...
               'units' , 'pixels',...
               'position', [ 10 10 450 50]);
       

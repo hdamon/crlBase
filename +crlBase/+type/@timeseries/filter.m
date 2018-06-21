@@ -1,9 +1,9 @@
 function outTseries = filter(tseries,dFilter)
-% Overloaded filter function for crlEEG.type.timeseries objects
+% Overloaded filter function for crlBase.type.timeseries objects
 %
 % Inputs
 % ------
-%  tseries : A crlEEG.type.timeseries object to be filtered
+%  tseries : A crlBase.type.timeseries object to be filtered
 % dFilter : A matlab digitalFilter object (typically created with
 % designfilt)
 %

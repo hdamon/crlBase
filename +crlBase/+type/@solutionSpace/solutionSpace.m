@@ -1,25 +1,25 @@
-classdef solutionSpace < crlEEG.type.gridInSpace
+classdef solutionSpace < crlBase.type.gridInSpace
 % Object class for grid-type solution spaces
 %
-% classdef solutionSpace < crlEEG.type.gridInSpace
+% classdef solutionSpace < crlBase.type.gridInSpace
 %
-% The crlEEG.type.solutionSpace object is used to combine a description of
-% a voxelized space as a crlEEG.type.gridInSpace object, with a list of
+% The crlBase.type.solutionSpace object is used to combine a description of
+% a voxelized space as a crlBase.type.gridInSpace object, with a list of
 % voxels indexed into that space at which at solution should be defined.
 %
 % Constructor Syntax:
 %   obj = solutionSpace(spaceDef,Voxels,desc);
-%          spaceDef :  Either a crlEEG.type.gridInSpace, or a file_NRRD to identify a
+%          spaceDef :  Either a crlBase.type.gridInSpace, or a file_NRRD to identify a
 %                        grid space from.
 %          Voxels   :  List of voxels for the solutionSpace to be defined
 %                        at.
 %          desc     :  Text description of the solution space
 %
 % Properties:
-%   Inherited:  sizes       <  crlEEG.type.gridInSpace < cnlGrid
-%               dimension   <  crlEEG.type.gridInSpace < cnlGrid
-%               origin      <  crlEEG.type.gridInSpace
-%               directions  <  crlEEG.type.gridInSpace
+%   Inherited:  sizes       <  crlBase.type.gridInSpace < cnlGrid
+%               dimension   <  crlBase.type.gridInSpace < cnlGrid
+%               origin      <  crlBase.type.gridInSpace
+%               directions  <  crlBase.type.gridInSpace
 %   New:    description
 %           Voxels
     
@@ -49,7 +49,7 @@ classdef solutionSpace < crlEEG.type.gridInSpace
       % function obj = solutionSpace(spaceDef,Voxels,desc)
       %
       % solutionSpace constructor.
-      %   Inputs:  spaceDef:  either a crlEEG.type.gridInSpace, or a file_NRRD to
+      %   Inputs:  spaceDef:  either a crlBase.type.gridInSpace, or a file_NRRD to
       %                         identify a grid space from.
       %            Voxels:    List of voxels for the solutionspace to be
       %                         defined at.  Defaults to 1:prod(obj.sizes)
@@ -57,7 +57,7 @@ classdef solutionSpace < crlEEG.type.gridInSpace
       %
       %
       
-      obj = obj@crlEEG.type.gridInSpace;
+      obj = obj@crlBase.type.gridInSpace;
       
       if nargin>0
         gridSpace = solutionSpace.parseSpaceDef(spaceDef);
@@ -152,7 +152,7 @@ classdef solutionSpace < crlEEG.type.gridInSpace
         'Both inputs must be solutionSpace objects');
       
       isEqual = false;
-      if eq@crlEEG.type.gridInSpace(a,b)
+      if eq@crlBase.type.gridInSpace(a,b)
         if isequal(a.Voxels,b.Voxels)
           isEqual = true;
         end;
@@ -168,16 +168,16 @@ classdef solutionSpace < crlEEG.type.gridInSpace
     function gridSpace = parseSpaceDef(spaceDef)
       % function gridSpace = parseSpaceDef(spaceDef)
       %
-      if isa(spaceDef,'crlEEG.type.gridInSpace')
-        gridSpace = crlEEG.type.gridInSpace(spaceDef);
+      if isa(spaceDef,'crlBase.type.gridInSpace')
+        gridSpace = crlBase.type.gridInSpace(spaceDef);
       elseif isa(spaceDef,'file_NRRD')     
         gridSpace = spaceDef.gridSpace;
-        %gridSpace = crlEEG.type.gridInSpace(spaceDef.sizes(spaceDef.domainDims), ...
+        %gridSpace = crlBase.type.gridInSpace(spaceDef.sizes(spaceDef.domainDims), ...
         %                         spaceDef.spaceorigin,spaceDef.spacedirections);  
-      elseif isa(spaceDef,'crlEEG.fileio.NRRD')
+      elseif isa(spaceDef,'crlBase.fileio.NRRD')
         gridSpace = spaceDef.gridSpace;
       else
-        error(['Not sure how to extract space information from a ' class(spaceDef) ' object.  Use a crlEEG.type.gridInSpace or file_NRRD object instead']);        
+        error(['Not sure how to extract space information from a ' class(spaceDef) ' object.  Use a crlBase.type.gridInSpace or file_NRRD object instead']);        
       end
     end
             
@@ -189,7 +189,7 @@ classdef solutionSpace < crlEEG.type.gridInSpace
 %       %
 %       if isstruct(obj)
 %         disp('Loading solutionSpace as a structure');
-%         spaceDef = crlEEG.type.gridInSpace(obj.sizes,obj.origin,obj.directions);
+%         spaceDef = crlBase.type.gridInSpace(obj.sizes,obj.origin,obj.directions);
 %         solutionSpace = solutionSpace(spaceDef,obj.Voxels,obj.description);
 %         solutionSpace.idxBy = obj.idxBy;
 %         out = solutionSpace;

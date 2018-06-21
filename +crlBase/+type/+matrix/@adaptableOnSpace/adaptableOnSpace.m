@@ -1,4 +1,4 @@
-classdef adaptableOnSpace < crlEEG.type.matrix.adaptable
+classdef adaptableOnSpace < crlBase.type.matrix.adaptable
   
   % function obj = adaptableOnSpace(matrix,solSpace,colPerVox)
   %
@@ -21,10 +21,10 @@ classdef adaptableOnSpace < crlEEG.type.matrix.adaptable
   % per voxel, if desired.
   %
   % Properties:
-  %   Inherited:  origMatrix     < crlEEG.type.matrix.adaptable
-  %               currMatrix     < crlEEG.type.matrix.adaptable
-  %               isTransposed   < crlEEG.type.matrix.adaptable
-  %               needsRebuild   < crlEEG.type.matrix.adaptable
+  %   Inherited:  origMatrix     < crlBase.type.matrix.adaptable
+  %               currMatrix     < crlBase.type.matrix.adaptable
+  %               isTransposed   < crlBase.type.matrix.adaptable
+  %               needsRebuild   < crlBase.type.matrix.adaptable
   %   New:        origSolutionSpace
   %               currSolutionSpace
   %               colPerVox
@@ -71,7 +71,7 @@ classdef adaptableOnSpace < crlEEG.type.matrix.adaptable
       %   colPerVox : (optional) Define the number of columns per voxel in
       %                 the matrix. Primarily for leadfields.
       
-      obj = obj@crlEEG.type.matrix.adaptable;
+      obj = obj@crlBase.type.matrix.adaptable;
       
       if nargin>0
         if ~(isnumeric(matrix)&&exist('solSpace','var')&&isa(solSpace,'cnlSolutionSpace'))

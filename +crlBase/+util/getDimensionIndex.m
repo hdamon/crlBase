@@ -23,7 +23,7 @@ function outIdx = getDimensionIndex(cellIn,refIn,isNumericValid)
 %   outIdx : The requested indices, either as a numeric array, or
 %              as ':' if all indices are requested.
 % 
-% Part of the crlEEG Project
+% Part of the crlBase Project
 % 2009-2018
 %
 

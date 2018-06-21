@@ -1,18 +1,18 @@
 function success = close(obj)
 % Close an object's parent figure
 %
-% success = crlEEG.gui.util.parentfigure.close(obj)
+% success = crlBase.gui.util.parentfigure.close(obj)
 %
 % Inputs
 % ------
-%  obj : uicontrol or crlEEG.gui.uipanel object
+%  obj : uicontrol or crlBase.gui.uipanel object
 %  
 % Output
 % ------
 %  success : True if object succesfully located figure closed
 %
 % Written By: Damon Hyde
-% Part of the crlEEG Project
+% Part of the crlBase Project
 % 2009-2017
 %
 

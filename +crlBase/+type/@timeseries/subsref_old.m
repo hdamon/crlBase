@@ -1,5 +1,5 @@
 function varargout = subsref(obj,s)
-% subsref method for crlEEG.type.timeseries
+% subsref method for crlBase.type.timeseries
 %
 %
 % There have been significant modifications to the way the timeseries
@@ -52,10 +52,10 @@ switch s(1).type
           end;
           
           rowIdx = ':';
-          colIdx = crlEEG.util.getIndexIntoCellStr(obj.labels,s.subs{1},false);
+          colIdx = crlBase.util.getIndexIntoCellStr(obj.chanLabels,s.subs{1},false);
         elseif numel(s.subs)==2
           rowIdx = s.subs{1};
-          colIdx = crlEEG.util.getIndexIntoCellStr(obj.labels,s.subs{2},true);
+          colIdx = crlBase.util.getIndexIntoCellStr(obj.chanLabels,s.subs{2},true);
         else
           error('Invalid indexing expression');
         end;

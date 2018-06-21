@@ -1,7 +1,7 @@
 function mapOut = getMapping(gridIn,gridOut,mapType)
 % function mapOut = getMapGridToGrid(gridIn,gridOut)
 %
-% Return a mapping from one crlEEG.typegrid object to another.
+% Return a mapping from one crlBase.typegrid object to another.
 %
 %
 % Written By: Damon Hyde
@@ -12,9 +12,9 @@ function mapOut = getMapping(gridIn,gridOut,mapType)
 % % Warning added (and then commented) Feb 2017
 % warning(['This code is likely unstable, and any use of it should be '...
 %          'carefully examined. You probably want a ' ...
-%          'crlEEG.typegridOnSpace object, anyway']);
+%          'crlBase.typegridOnSpace object, anyway']);
 
-if ~(isa(gridIn,'crlEEG.typegrid')&&isa(gridOut,'crlEEG.typegrid'))
+if ~(isa(gridIn,'crlBase.typegrid')&&isa(gridOut,'crlBase.typegrid'))
   error('gridIn and gridOut must be of class cnlGrid');
 end
 
@@ -22,7 +22,7 @@ if ~exist('mapType','var'), mapType = 'tent'; end;
 
 switch lower(mapType)
   case 'tent'
-    mapOut = crlEEG.typegrid.getMapping_Tent(gridIn.sizes,gridOut.sizes);
+    mapOut = crlBase.typegrid.getMapping_Tent(gridIn.sizes,gridOut.sizes);
   case 'nearest'
     error('Nearest neighbor resampling has not yet been implemented');
   otherwise

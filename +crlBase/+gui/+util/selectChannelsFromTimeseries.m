@@ -1,19 +1,19 @@
 classdef selectChannelsFromTimeseries < handle
-  % Select a subset of channels from a crlEEG.type.timeseries object
+  % Select a subset of channels from a crlBase.type.timeseries object
   %
-  % obj = crlEEG.gui.util.selectChannelsFromTimeseries(timeseries)
+  % obj = crlBase.gui.util.selectChannelsFromTimeseries(timeseries)
   %
   % Input
   % -----
-  %   timeseries : crlEEG.type.timeseries object
+  %   timeseries : crlBase.type.timeseries object
   %
   % Properties
   % ----------
   %    currChannels : List of currently selected channels
-  %    output : crlEEG.type.timeseries object containing only the 
+  %    output : crlBase.type.timeseries object containing only the 
   %               selected channels.
   %
-  % Part of the crlEEG Project
+  % Part of the crlBase Project
   % 2009-2018
   %
   
@@ -47,7 +47,7 @@ classdef selectChannelsFromTimeseries < handle
     function obj = selectChannelsFromTimeseries(timeseries)      
       if nargin>0       
        obj.input = timeseries;
-       obj.currChannels = obj.input.labels;
+       obj.currChannels = obj.input.chanLabels;
       end
     end
     
@@ -74,7 +74,7 @@ classdef selectChannelsFromTimeseries < handle
     function editChannels(obj)
       % Raise or open a GUI to edit selected channels
       %
-      if ~crlEEG.gui.util.parentfigure.raise(obj.gui)
+      if ~crlBase.gui.util.parentfigure.raise(obj.gui)
         
         f = figure('Units','pixels','Position',obj.setPos);
         obj.gui = uicontrol(f,'Style','listbox',...
@@ -88,7 +88,7 @@ classdef selectChannelsFromTimeseries < handle
         
     function set.currChannels(obj,val)
       % Set method for
-      % crlEEG.gui.util.selectChannelsFromTimeseries.selectedStrings
+      % crlBase.gui.util.selectChannelsFromTimeseries.selectedStrings
       %
       % Provides input checking, and notifies output when set value is
       % changed (but not otherwise)
@@ -111,15 +111,15 @@ classdef selectChannelsFromTimeseries < handle
     end
     
     function set.input(obj,timeseries)
-      assert(isa(timeseries,'crlEEG.type.timeseries'),...
-              'Input must be a crlEEG.type.timeseries object');
+      assert(isa(timeseries,'crlBase.type.timeseries'),...
+              'Input must be a crlBase.type.timeseries object');
       if ~isequal(obj.input_,timeseries)
         obj.input_ = timeseries;
         
-        if ~isequal(obj.input_.labels,obj.origChannels)
+        if ~isequal(obj.input_.chanLabels,obj.origChannels)
           % Only update the selected channels if the overall list has
           % changed.
-          obj.origChannels = obj.input_.labels;
+          obj.origChannels = obj.input_.chanLabels;
           obj.currChannels = obj.origChannels;
         else          
           notify(obj,'updatedOut');
@@ -129,7 +129,7 @@ classdef selectChannelsFromTimeseries < handle
     
     %% Set/Get methods for obj.output
     function set.output(~,~)
-      error('Output of crlEEG.gui.util.selectChannelsFromTimeseries is a dependent property');
+      error('Output of crlBase.gui.util.selectChannelsFromTimeseries is a dependent property');
     end;
     
     function out = get.output(obj)
@@ -162,14 +162,14 @@ classdef selectChannelsFromTimeseries < handle
       %disp('SyncingGUI')
       if ~isempty(obj.input)
         if ~isempty(obj.gui)&&ishghandle(obj.gui)
-          allChan = obj.input.labels;
+          allChan = obj.input.chanLabels;
           if ~isequal(allChan,obj.gui.String)
             obj.gui.String = allChan;
             obj.gui.Value = 1:numel(allChan);
             obj.gui.Max = numel(allChan);
           end
           
-          chanInInput = find(ismember(obj.input.labels,obj.currChannels));
+          chanInInput = find(ismember(obj.input.chanLabels,obj.currChannels));
           if ~isequal(chanInInput,obj.gui.Value)
             obj.gui.Value = chanInInput;
           end;
@@ -179,12 +179,12 @@ classdef selectChannelsFromTimeseries < handle
     
     function changeSel(obj)            
       % Callback function when obj.gui selection changes
-      obj.currChannels = obj.input.labels(obj.gui.Value);
+      obj.currChannels = obj.input.chanLabels(obj.gui.Value);
     end;
     
     function closeGUI(obj)      
       % Callback to close gui figure.
-        crlEEG.gui.util.parentfigure.close(obj.gui);      
+        crlBase.gui.util.parentfigure.close(obj.gui);      
     end
   end
   

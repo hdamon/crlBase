@@ -1,11 +1,11 @@
 function out = resample(obj,resampleLevel)
 % Generate a new grid with a different number of samples
 %
-% crlEEG.typegrid.RESAMPLE
+% crlBase.typegrid.RESAMPLE
 %
 % function out = RESAMPLE(obj,resamplelevel)
 %
-% Returns a new crlEEG.typegrid object, resampled according to the
+% Returns a new crlBase.typegrid object, resampled according to the
 % values in resampleLevel.
 %
 % That is, the output grid will be of size:

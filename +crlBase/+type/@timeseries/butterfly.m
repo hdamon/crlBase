@@ -8,8 +8,8 @@ function plotOut = butterfly(tseries,varargin)
 % 
 % Optional Inputs:
 %   'ax'     : Handle to a matlab axis to display in
-%   'xvals'  : Values to display along X-Axis
-%   'yrange' : Range to use for Y-Axis
+%   'tVals'  : Values to display along X-Axis
+%   'dataRange' : Range to use for Y-Axis
 %
 % This object exists mostly to maintain a consistent structure across the
 % entire uitools package. It additionally ensures that the resulting plot
@@ -21,14 +21,14 @@ function plotOut = butterfly(tseries,varargin)
 % Part of the cnlEEG Project
 %
 
-import crlEEG.util.validation.isNumericVector
+import crlBase.util.validation.isNumericVector
 
 %% Input Parsing
 p = inputParser;
-p.addRequired('tseries',@(x) isa(x,'crlEEG.type.timeseries'));
+p.addRequired('tseries',@(x) isa(x,'crlBase.type.timeseries'));
 p.addOptional('ax',[],@(x) ishghandle(x)&&strcmpi(get(x,'type'),'axes'));
-p.addParamValue('xrange',tseries.xrange,@(x) isvector(x)&&(numel(x)==2));
-p.addParamValue('yrange',tseries.yrange,@(x) isvector(x)&&(numel(x)==2));
+p.addParamValue('tRange',tseries.tRange,@(x) isvector(x)&&(numel(x)==2));
+p.addParamValue('dataRange',tseries.dataRange,@(x) isvector(x)&&(numel(x)==2));
 p.addParamValue('chandisp',[],@(x) isNumericVector(x));
 p.addParamValue('timedisp',[],@(x) isNumericVector(x,2));
 p.addParamValue('sampdisp',[],@(x) isNumericVector(x,2));
@@ -38,16 +38,16 @@ p.parse(tseries,varargin{:});
 
 ax = p.Results.ax;
 
-xvals = tseries.xvals;
-xrange = p.Results.xrange;
-yrange = p.Results.yrange;
+tVals = tseries.tVals;
+tRange = p.Results.tRange;
+dataRange = p.Results.dataRange;
 
 %% Shift to appropriate axes, or open a new one.
 if isempty(ax), figure; ax = axes; end;
 axes(ax);
 
 % If plotting a single timepoint, use X's.
-if numel(xvals)==1, plotOpts = 'x';
+if numel(tVals)==1, plotOpts = 'x';
 else                plotOpts = '';  end;
 
 if ~isempty(p.Results.timedisp)
@@ -73,7 +73,7 @@ useIdx = round(linspace(sampRange(1),sampRange(2),10000));
 useIdx = unique(useIdx);
 
 %% Plot!
-%plotOut = plot(xvals,tseries.data,plotOpts);
+%plotOut = plot(tVals,tseries.data,plotOpts);
 tmpData = tseries.getPlotData;
 tmpData = tmpData(useIdx,chanDisp);
 
@@ -82,12 +82,12 @@ dataChans = dataChans(chanDisp);
 
 ax.NextPlot = 'add';
 if any(dataChans)
-  plotOut = plot(xvals(useIdx),tmpData(:,dataChans),['k' plotOpts],'ButtonDownFcn',get(ax,'ButtonDownFcn'));
+  plotOut = plot(tVals(useIdx),tmpData(:,dataChans),['k' plotOpts],'ButtonDownFcn',get(ax,'ButtonDownFcn'));
 end
 
 if any(~dataChans)
   ax.NextPlot = 'add';
-  tmp = plot(xvals(useIdx),tmpData(:,~dataChans)./p.Results.scale,[plotOpts], ...
+  tmp = plot(tVals(useIdx),tmpData(:,~dataChans)./p.Results.scale,[plotOpts], ...
             'linewidth',2,'ButtonDownFcn',get(ax,'ButtonDownFcn'));
   if exist('plotOut','var')
     plotOut = [plotOut ; tmp];
@@ -97,12 +97,12 @@ if any(~dataChans)
 end;
 
 % Modify X Limits if plotting a single timepoint.
-XLim = p.Results.xrange;
+XLim = p.Results.tRange;
 if XLim(1)==XLim(2), XLim = XLim + [-0.1 0.1]; end;
 ax.XLim = XLim;
 
 % Make the y limits symmetric.
-YLim = max(abs(yrange));
+YLim = max(abs(dataRange));
 if YLim(1)==0, YLim = 0.1; end;
 YLim = YLim./p.Results.scale;
 ax.YLim = [-YLim YLim];
@@ -117,12 +117,12 @@ e = log10(ticks(end));
 e = sign(e)*floor(abs(e));
 yt = ticks/10^e;
 
-labels = cell(size(yt));
+chanLabels = cell(size(yt));
 for i = 1:numel(yt)
-  labels{i} = sprintf('%1.2f',yt(i));
+  chanLabels{i} = sprintf('%1.2f',yt(i));
 end
 
-set(ax,'YTickLabel',labels);
+set(ax,'YTickLabel',chanLabels);
 
 text(XLim(1),YLim(1)*0.95,sprintf('\\times 10^{%d}',e));
 

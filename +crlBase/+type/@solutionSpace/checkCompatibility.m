@@ -6,7 +6,7 @@ function varargout = checkCompatibility(spaceIn,spaceOut)
 % Checks to see if spaceIn can be transformed to spaceOut.  In practice,
 % this means that the voxels in spaceOut are a subset of those in spaceIn.
 %
-% Part of the crlEEG Project
+% Part of the crlBase Project
 % 2009-2018
 %
 

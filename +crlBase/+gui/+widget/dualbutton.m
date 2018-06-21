@@ -1,4 +1,4 @@
-classdef dualbutton < crlEEG.gui.uipanel
+classdef dualbutton < crlBase.gui.uipanel
   % UI Object for Dual Button Panel
   %
   % Create a uiPanel with two buttons in it.
@@ -35,7 +35,7 @@ classdef dualbutton < crlEEG.gui.uipanel
       parse(p,varargin{:});
             
       %% Initialize UI Objects
-      obj = obj@crlEEG.gui.uipanel(...        
+      obj = obj@crlBase.gui.uipanel(...        
         'units','pixels',...
         'position',[10 10 200 50]);
                      
