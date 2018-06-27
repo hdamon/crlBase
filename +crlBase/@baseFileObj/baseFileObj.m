@@ -83,9 +83,7 @@ classdef (Abstract) baseFileObj < handle
         p.parse(varargin{:});
         
         [fName, fPath] = ...
-          crlBase.checkFileNameAndPath(p.Results.fname,p.Results.fpath);
-        
-        fName = crlBase.validateFileExtension(fName,obj.validExts);
+          crlBase.util.checkFileNameAndPath(p.Results.fname,p.Results.fpath);              
         
         obj.fname = fName;
         obj.fpath = fPath;
@@ -98,11 +96,11 @@ classdef (Abstract) baseFileObj < handle
     %% Functionality for checking filenames
     function set.fname(obj,fname)
       % Set the filename, 
-      obj.fname = crlBase.validateFileExtension(fname,obj.validExts);           
+      obj.fname = crlBase.util.validateFileExtension(fname,obj.validExts);           
     end;
     
     function out = get.fullfile(obj)
-      out = fullfile(obj.fpath,obj.fname);
+      out = fullfile(obj.fpath,obj.fname); %#ok<CPROP>
     end;
     
     function out = get.date(obj)
