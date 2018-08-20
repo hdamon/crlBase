@@ -69,8 +69,8 @@ classdef (Abstract) baseFileObj < handle
         % If a crlBase.baseFileObj object was passed in, return a new
         % object with the properties copied.
         if isa(varargin{1},'crlBase.baseFileObj')
-          obj.fname = varargin{1}.fname;
-          obj.fpath = varargin{1}.fpath;   
+          obj.fname    = varargin{1}.fname;
+          obj.fpath    = varargin{1}.fpath;   
           obj.readOnly = varargin{1}.readOnly;
           return;
         end;
