@@ -43,6 +43,6 @@ if ~( all(all(round(10*boxIn)==round(10*boxOut)))|| ...
 end;
 
 % Get Mapping
-mapOut = getMapping@crlBase.typegrid(gridIn,gridOut,mapType);
+mapOut = getMapping@crlBase.type.grid(gridIn,gridOut,mapType);
 
 end

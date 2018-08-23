@@ -1,11 +1,19 @@
 function ptsOut = getGridPoints(grid,idx)
-% function ptsOut = getGridPoints(grid,idx)
-%
 % Get a list of all grid points in X, Y, and Z
 %
-% idx can be used to determine whether the index starts at zero or
-% one using the IndexType.startatZero and IndexType.startatOne
-% enumerated type.
+% function ptsOut = getGridPoints(grid,idx)
+%
+% Inputs
+% ------
+%    grid : crlBase.type.grid object
+%    idx  : (optional) crlBase.type.indexType object
+%             Can be used to determine whether the index starts at zero or
+%             one using the IndexType.startatZero and IndexType.startatOne
+%             enumerated type.
+%
+% Output
+% ------
+%   ptsOut : Ngrid X 3 array of node locations.
 %
 % Written By: Damon Hyde
 % Part of the cnlEEG Project
