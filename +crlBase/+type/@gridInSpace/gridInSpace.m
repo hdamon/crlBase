@@ -1,5 +1,5 @@
-classdef gridInSpace < crlBase.typegrid
-  % classdef gridInSpace < cnlGrid
+classdef gridInSpace < crlBase.type.grid
+  % classdef gridInSpace < crlBase.type.grid
   %
   % Class defining a cnlGrid embedded in three dimensional space.
   % crlBase.type.gridInSpace is used to extend cnlGrid to 3D voxelized volumes embedded
@@ -8,7 +8,7 @@ classdef gridInSpace < crlBase.typegrid
   % will be appropriately buffered with zeros if necessary
   %
   % Constructor Syntax:
-  %   obj = crlBase.typegridInSpace(sizes,origin,directions);
+  %   obj = crlBase.type.gridInSpace(sizes,origin,directions);
   %          sizes      : 1xN    vector of integer sizes
   %          origin     : 1x3    vector defining space origin
   %          directions : 3xNdim matrix of length 3 vectors defining the space
@@ -48,7 +48,7 @@ classdef gridInSpace < crlBase.typegrid
     
     function obj = gridInSpace(varargin)
       % Constructor Syntax:
-      %   obj = crlBase.typegridInSpace(sizes,origin,directions);
+      %   obj = crlBase.type.gridInSpace(sizes,origin,directions);
       %         sizes      : 1xN    vector of integer sizes
       %         origin     : 1x3    vector defining space origin
       %         directions : 3xNdim matrix of length 3 vectors defining the space
@@ -56,11 +56,11 @@ classdef gridInSpace < crlBase.typegrid
       % origin and directions are optional parameters.
       
       % Initialize Underlying Grid Object
-      obj = obj@crlBase.typegrid;
+      obj = obj@crlBase.type.grid;
       
       % Pass a grid in, get a grid out.
       if nargin>0
-      if isa(varargin{1},'crlBase.typegridInSpace')
+      if isa(varargin{1},'crlBase.type.gridInSpace')
         obj.sizes      = sizes.sizes;
         obj.origin     = sizes.origin;
         obj.directions = sizes.directions;
@@ -90,25 +90,25 @@ classdef gridInSpace < crlBase.typegrid
     
     %% Get/Set 
     function set.aspect(obj,val)
-      error('Cannot directly set the aspect property of a crlBase.typegridInSpace object');
+      error('Cannot directly set the aspect property of a crlBase.type.gridInSpace object');
     end;
     
     function out = get.aspect(obj)
-      % Returns the aspect ratio of the crlBase.typegridInSpace object
+      % Returns the aspect ratio of the crlBase.type.gridInSpace object
       out = sqrt(sum(obj.directions.^2,1));
     end
     
     function isEqual = eq(a,b)
-      % Checks equality of crlBase.typegridInSpace objects
+      % Checks equality of crlBase.type.gridInSpace objects
       %
       % Equality is defined as having the same underlying grids, and
       % origins/direction definitions within 0.01 base units of each other.
       %
-      assert(isa(a,'crlBase.typegridInSpace')&&isa(b,'crlBase.typegridInSpace'),...
-        'Both inputs must be crlBase.typegridInSpace objects');
+      assert(isa(a,'crlBase.type.gridInSpace')&&isa(b,'crlBase.type.gridInSpace'),...
+        'Both inputs must be crlBase.type.gridInSpace objects');
       
       isEqual = false;
-      if eq@crlBase.typegrid(a,b)
+      if eq@crlBase.type.grid(a,b)
         if all(abs(a.origin-b.origin)<1e-2) && ...
             all(abs(a.directions(:)-b.directions(:))<1e-2)
           isEqual = true;
@@ -146,7 +146,7 @@ classdef gridInSpace < crlBase.typegrid
       % function center = get.center(obj)
       %
       % Returns the geometric center of the bounding box for the
-      % crlBase.typegridInSpace.
+      % crlBase.type.gridInSpace.
       
       bbox = obj.boundingBox;
       center = 0.125*sum(bbox,1);
