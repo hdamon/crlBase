@@ -72,7 +72,24 @@ classdef grid
       end;      
         
     end
-        
+       
+    function out = sliceGrid(obj,varargin)
+      
+      newSize = zeros(1,3);
+      for i = 1:3
+        if i<=numel(varargin)
+          if isequal(varargin{i},':')
+            newSize(i) = obj.sizes(i);
+          else
+            newSize(i) = numel(varargin{i});
+          end;
+        else
+          newSize(i) = obj.sizes(i);
+        end
+      end
+      out = crlBase.type.grid(newSize);
+    end
+    
     out = resample(obj,resamplelevel)
     
     ptsOut = getGridPoints(grid,idx)

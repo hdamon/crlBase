@@ -28,16 +28,22 @@ switch nargin
     fName = [];
     fPath = [];
   case 1
-    [path,name,ext] = fileparts(fName);
-    fName = [name ext];
-    fPath = path;
-    if isempty(fPath), fPath = './'; end;
+    if ~isempty(fName)
+     [path,name,ext] = fileparts(fName);
+     fName = [name ext];
+     fPath = path;
+     if isempty(fPath), fPath = './'; end;
+    else      
+      fPath = [];
+    end;
   case 2
-    [path,name,ext] = fileparts(fName);
-    if ~isempty(path)
-      error('Define path in either fName or fPath, but not both');
-    end
-    fName = [name ext];    
+    if ~isempty(fName)
+      [path,name,ext] = fileparts(fName);
+      if ~isempty(path)
+        error('Define path in either fName or fPath, but not both');
+      end
+      fName = [name ext];
+    end;
 end
 
 % Generate temporary filenames and paths, as needed
