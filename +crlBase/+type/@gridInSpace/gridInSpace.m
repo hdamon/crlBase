@@ -124,6 +124,12 @@ classdef gridInSpace < crlBase.type.grid
     out = resample(obj,resampleLevel);
     obj = straightenDirections(obj);
     
+    function gridOut = sliceGrid(gridIn,varargin)
+      
+      
+      
+    end
+    
     
     function obj = set.origin(obj,newOrigin)
       % function obj = set.origin(obj,newOrigin)
@@ -131,7 +137,7 @@ classdef gridInSpace < crlBase.type.grid
       %      
       if numel(newOrigin)==3
         obj.origin = newOrigin(:)';
-      elseif numel(newOrigin)==obj.dimension;
+      elseif numel(newOrigin)==obj.dimension
         tmp = zeros(1,3); 
         tmp(1:obj.dimension) = newOrigin;
         obj.origin = tmp(:)';
