@@ -36,6 +36,7 @@ end
 
 if ~isempty(extensions)
   [fpath,~,ext] = fileparts(fname);
+  ext = lower(ext);
   assert(isempty(fpath),'Pass only the filename (without path) to checkFileNameForValidExtension()');
   if ismember(ext,extensions)
     validatedName = fname;
