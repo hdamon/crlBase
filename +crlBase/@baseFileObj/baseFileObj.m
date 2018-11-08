@@ -1,5 +1,5 @@
 classdef (Abstract) baseFileObj < handle 
-% classdef crlBase.baseFileObj < handle
+% classdef crlBase.BASEOBJ < handle
 %
 % Abstract superClass for all other filetypes.
 %
@@ -40,16 +40,10 @@ classdef (Abstract) baseFileObj < handle
   properties
     fname;
     fpath;      
-    PERMISSION = 'r'
-  end
-  
-  properties (Hidden = true)
-    OPEN = false
-    FID = -1;
+    readOnly;
   end
   
   properties (Dependent = true, Hidden=true);    
-    readOnly
     existsOnDisk;
     fname_short;
     fext;
@@ -77,21 +71,15 @@ classdef (Abstract) baseFileObj < handle
         if isa(varargin{1},'crlBase.baseFileObj')
           obj.fname    = varargin{1}.fname;
           obj.fpath    = varargin{1}.fpath;   
-          obj.PERMISSION = varargin{1}.PERMISSION;
-          %obj.readOnly = varargin{1}.readOnly;
+          obj.readOnly = varargin{1}.readOnly;
           return;
         end;
         
-        fieldNames = {'PERMISSION','readOnly'};
-        testFunc = @(x) isempty(x)||(ischar(x)&&~ismember(x,fieldNames));
-        
         % Otherwise, parse as a fname/fpath pair.
         p = inputParser;
-        p.addOptional('fname',[],testFunc);
-        p.addOptional('fpath',[],testFunc);        
-        p.addOptional('PERMISSION','r',@(x) testFunc(x)&&all(ismember(x,'RWrw')));
-        p.addParameter('readOnly',false,@(x) islogical(x));        
-        
+        p.addOptional('fname',[],@(x) isempty(x)||ischar(x));
+        p.addOptional('fpath',[],@(x) isempty(x)||ischar(x));        
+        p.addParamValue('readOnly',false,@(x) islogical(x));
         p.parse(varargin{:});
         
         [fName, fPath] = ...
@@ -99,11 +87,7 @@ classdef (Abstract) baseFileObj < handle
         
         obj.fname = fName;
         obj.fpath = fPath;
-        obj.PERMISSION = p.Results.PERMISSION;
-        if p.Results.readOnly
-          obj.PERMISSION = setdiff(obj.PERMISSION,'Ww');
-        end;
-%        obj.readOnly = p.Results.readOnly;
+        obj.readOnly = p.Results.readOnly;
         
       end;
     end;
@@ -143,17 +127,6 @@ classdef (Abstract) baseFileObj < handle
     function set.fpath(obj,fpath)
       obj.fpath = crlBase.baseFileObj.checkPath(fpath);
     end;
-    
-    function val = get.readOnly(obj)
-      warning('crlBase.baseFileObj.readOnly is deprecated. Use crlBase.baseFileObj.permission instead');
-      val = ismember(obj.permission,'Rr');
-    end
-    
-    function set.readOnly(obj,val)
-      warning('crlbase.baseFileObj.readOnly is deprecated');
-      %obj.readOnly = val;
-    end
-      
                            
   end % Methods
   
@@ -167,7 +140,7 @@ classdef (Abstract) baseFileObj < handle
       
       if exist(['./' fpath],'dir') 
         % If path is relative, pad with current working directory.
-        fpath = fullfile(pwd,fpath);
+        fpath = [pwd '/' fpath];
       elseif exist(fpath,'dir') 
         % If path is absolute, just use it.
         fpath = fpath;
@@ -178,8 +151,8 @@ classdef (Abstract) baseFileObj < handle
         fpath = './';
       end;
       
-      % Make sure there's a file separator at the end
-      fpath = fullfile(fpath, filesep);     
+      % Get full path 
+      fpath = fullfile([fpath filesep]);     
     end;      
     
     function out = fnameFcn(in,objtype)

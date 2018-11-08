@@ -3,7 +3,7 @@ function [validatedName] = checkFileNameForValidExtension(fname,extensions)
 %
 % function [validatedName] = checkForValidFileExtension(fname,extensions)
 %
-% If the filename lacks any extension, an appropriate one will be appended
+% If the filename lacks any extension, and appropriate one will be appended
 % to it (primarily to add it in for temporary filenames). 
 %
 % If fname does not have an extension, returns [fname extentions{1}]
@@ -11,11 +11,11 @@ function [validatedName] = checkFileNameForValidExtension(fname,extensions)
 % Inputs
 % ------
 %   fname:      Filename to check
-%   extensions: Cell array of valid file extensions, with leading period.
+%   extensions: Cell array of valid file extensions, with leading
 %
 % Outputs
 % -------
-%   validatedName: Filename with validated/corrected file extension.
+%   validatedName: Filename with 
 %
 % Written By: Damon Hyde
 % Part of the crlEEG Project
@@ -46,7 +46,6 @@ if ~isempty(extensions)
     error(['Filename must have one of these extensions: ' extensions{:}]);
   end  
 else
-  % If no extensions are provided, all extensions are valid.
   validatedName = fname;
 end;
 
