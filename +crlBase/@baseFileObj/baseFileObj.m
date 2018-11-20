@@ -40,10 +40,11 @@ classdef (Abstract) baseFileObj < handle
   properties
     fname;
     fpath;      
-    readOnly;
+    permission;
   end
   
-  properties (Dependent = true, Hidden=true);    
+  properties (Dependent = true, Hidden=true) 
+    readOnly
     existsOnDisk;
     fname_short;
     fext;
@@ -57,7 +58,7 @@ classdef (Abstract) baseFileObj < handle
       
   properties (Abstract, Constant, Hidden = true)
     validExts;
-  end;
+  end
           
   methods
     %% Object Constructor
@@ -73,13 +74,14 @@ classdef (Abstract) baseFileObj < handle
           obj.fpath    = varargin{1}.fpath;   
           obj.readOnly = varargin{1}.readOnly;
           return;
-        end;
+        end
         
         % Otherwise, parse as a fname/fpath pair.
         p = inputParser;
         p.addOptional('fname',[],@(x) isempty(x)||ischar(x));
         p.addOptional('fpath',[],@(x) isempty(x)||ischar(x));        
         p.addParamValue('readOnly',false,@(x) islogical(x));
+        p.addParameter('permission','rw',@(x) ischar(x));
         p.parse(varargin{:});
         
         [fName, fPath] = ...
@@ -87,21 +89,26 @@ classdef (Abstract) baseFileObj < handle
         
         obj.fname = fName;
         obj.fpath = fPath;
-        obj.readOnly = p.Results.readOnly;
-        
-      end;
-    end;
+
+        %obj.permission = p.Results.permission;
+        if p.Results.readOnly
+          obj.permission = setdiff(obj.permission,'Ww');
+        end
+%        obj.readOnly = p.Results.readOnly;
+
+      end
+    end
   
 
     %% Functionality for checking filenames
     function set.fname(obj,fname)
       % Set the filename, 
       obj.fname = crlBase.util.validateFileExtension(fname,obj.validExts);           
-    end;
+    end
     
     function out = get.fullfile(obj)
       out = fullfile(obj.fpath,obj.fname); %#ok<CPROP>
-    end;
+    end
     
     function out = get.date(obj)
       d = dir(obj.fullfile);
@@ -111,12 +118,12 @@ classdef (Abstract) baseFileObj < handle
     function out = get.fname_short(obj)
       % Returns the filename without its extension
       [~,out,~] = fileparts(obj.fname);
-    end;
+    end
     
     function out = get.fext(obj)
       % Returns the file extension, with leading period.
       [~,~,out] = fileparts(obj.fname);
-    end;
+    end
     
     function out = get.existsOnDisk(obj)
       % Returns true if the file exists on disk.
@@ -126,7 +133,19 @@ classdef (Abstract) baseFileObj < handle
     %% Functionality for Checking Paths
     function set.fpath(obj,fpath)
       obj.fpath = crlBase.baseFileObj.checkPath(fpath);
-    end;
+    end
+    
+    function val = get.readOnly(obj)
+      warning('crlBase.baseFileObj.readOnly is deprecated. Use crlBase.baseFileObj.permission instead');
+      val = ismember(obj.permission,'Rr');
+    end
+    
+    function set.readOnly(obj,val)
+      warning('crlbase.baseFileObj.readOnly is deprecated');
+      %obj.readOnly = val;
+    end
+      
+
                            
   end % Methods
   
@@ -149,11 +168,12 @@ classdef (Abstract) baseFileObj < handle
         warning(['Can''t locate directory: ' fpath ]);
         warning on backtrace
         fpath = './';
-      end;
+      end
       
-      % Get full path 
-      fpath = fullfile([fpath filesep]);     
-    end;      
+
+      % Make sure there's a file separator at the end
+      fpath = fullfile(fpath, filesep);     
+    end      
     
     function out = fnameFcn(in,objtype)
       out = isempty(in) || isa(in,objtype) || ...
@@ -172,6 +192,6 @@ classdef (Abstract) baseFileObj < handle
   methods (Abstract)
     read(fileIn,varargin);
     write(fileIn,varargin);
-  end;
+  end
   
 end
