@@ -1,4 +1,4 @@
-function [MAG] = MAG(A,B)
+function [MAG] = MAG(A,B,dim)
 % function [MAG] = MAG(LeadField1,LeadField2,SolutionRegion)
 %
 % Compute the relative difference metric (RDM) and magnitude error (MAG)
@@ -8,13 +8,17 @@ function [MAG] = MAG(A,B)
 % January 2014
 
 if (ndims(A)~=ndims(B))||(~all(size(A)==size(B)))
-  error('cnlEEG:metricsPkg:MAG:SizeMismatch', ...
+  error('crlBase:metrics:MAG:SizeMismatch', ...
         ['Mismatch in sizes between inputs to metrics.MAG']);
-end;
- 
-normA = norm(A(:));
-normB = norm(B(:));
+end
+if ~exist('dim','var'), dim = 1; end; 
 
-MAG = normA/normB;
+normA = sqrt(sum(A.^2,dim));
+normB = sqrt(sum(B.^2,dim));
+
+%normA = norm(A(:));
+%normB = norm(B(:));
+
+MAG = normA./normB;
 
 end

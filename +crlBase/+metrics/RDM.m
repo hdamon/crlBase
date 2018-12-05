@@ -1,4 +1,4 @@
-function [RDM] = RDM(A,B)
+function [RDM] = RDM(A,B,dim)
 % function [RDM ] = RDM(A,B)
 %
 % Compute the relative difference metric (RDM) and magnitude error (MAG)
@@ -10,11 +10,14 @@ function [RDM] = RDM(A,B)
 if (ndims(A)~=ndims(B))||(~all(size(A)==size(B)))
   error('cnlEEG:metricsPkg:SizeMismatch', ...
         ['Mismatch in sizes between inputs to metrics.RDMandMAG']);
-end;
+end
  
-normA = norm(A(:));
-normB = norm(B(:));
+if ~exist('dim','var'), dim = 1; end
 
-RDM = norm(A/normA - B/normB);
+normA = sqrt(sum(A.^2,dim));
+normB = sqrt(sum(B.^2,dim));
+
+RDM = sqrt(sum((A./normA - B./normB).^2,dim));
+
 
 end

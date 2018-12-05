@@ -3,6 +3,16 @@ function [RDM, MAG] = matrixRDMandMAG(matA,matB)
 %
 % function [RDM,MAG] = matrixRDM(matA,matB)
 %
+% Inputs
+% ------
+%   matA,matB : Matrices to compare. Must satisfy size(matA)==size(matB)
+%
+% Outputs
+% -------
+%   RDM : Relative difference metric, per row
+%   MAG : Magnitude difference metric, per row
+%
+% 
 %
 
 assert(all(size(matA)==size(matB)),...
